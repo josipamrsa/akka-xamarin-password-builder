@@ -30,6 +30,7 @@ namespace PasswordBuilder
                 });
         }
 
+        //----UI HANDLERS----//
         protected override void OnAppearing()
         {
             // Initializer
