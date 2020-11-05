@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PasswordBuilder.MainPage">
+
+    <StackLayout VerticalOptions="CenterAndExpand" 
+                 HorizontalOptions="CenterAndExpand">
+        
+        <Label FontSize="Title" 
+               Text="Sentence2Password" 
+               HorizontalTextAlignment="Center" 
+               Margin="0,0,0,50"/>
+        
+        <StackLayout x:Name="FormStack" 
+                     Margin="0,0,0,50">
+            <Entry x:Name="InputSentence" 
+                   Placeholder="Enter a meaningful sentence..." 
+                   Text="{Binding Sentence}" />
+            <Button x:Name="ButtonGenerate" 
+                    Text="Generate" 
+                    Command="{Binding StartPasswordGeneratorCommand}"/>
+        </StackLayout>
+
+        <StackLayout x:Name="PasswordStack" 
+                     Margin="0,0,0,50">
+            <Label FontSize="Subtitle" 
+                   Text="Generated password" 
+                   HorizontalTextAlignment="Center"/>
+            <Label Text="{Binding Password}" 
+                   HorizontalTextAlignment="Center" 
+                   FontSize="Large">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer 
+                        NumberOfTapsRequired="2" 
+                        Command="{Binding CopyToClipboardCommand}"
+                        CommandParameter="{Binding Password}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </StackLayout>
+        
+    </StackLayout>
+
+</ContentPage>
