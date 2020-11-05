@@ -11,6 +11,7 @@ namespace PasswordBuilder
 {
     public partial class MainPage : ContentPage
     {
+        //----VIEWMODEL INSTANCE----//
         public PassMainViewModel ViewModel
         {
             get { return BindingContext as PassMainViewModel; }
@@ -21,6 +22,7 @@ namespace PasswordBuilder
             InitializeComponent();
             ViewModel = new PassMainViewModel();
 
+            // Notify user that text has been successfully copied in Clipboard
             MessagingCenter.Subscribe<PassMainViewModel, string>(this, 
                 "textCopiedToClipboard", 
                 (sender, info) => {
@@ -30,6 +32,7 @@ namespace PasswordBuilder
 
         protected override void OnAppearing()
         {
+            // Initializer
             ViewModel.InitializeSystemCommand.Execute(null);
         }
     }
