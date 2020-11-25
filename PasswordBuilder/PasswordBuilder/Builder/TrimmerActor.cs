@@ -22,10 +22,18 @@ namespace PasswordBuilder.Builder
         {
             // Trim by typical sentence symbols
             char[] symbolsToTrim = new char[] { '.', ',', ';', '?', '!' };
-            string cleanSentence = content.Trim(symbolsToTrim);
 
+            // Initialize a new list where words will be cleaned up
+            List<string> cleanSentence = new List<string>();
+
+            // Clean up each word in provided sentence
+            Array.ForEach(content.Split(' '), (c) => {
+                cleanSentence.Add(c.Trim(symbolsToTrim));
+            });
+            
             // Send the newly cleaned sentence back
-            TrimmedSentence trimmed = new TrimmedSentence(cleanSentence, cleanSentence.Split(' ').Length);
+            TrimmedSentence trimmed = new TrimmedSentence(
+                String.Join(" ", cleanSentence), cleanSentence.Count);
             Sender.Tell(trimmed);           
         }
     }

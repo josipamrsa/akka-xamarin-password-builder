@@ -4,6 +4,7 @@ using Akka.Util.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace PasswordBuilder.Builder
 {
@@ -81,7 +82,9 @@ namespace PasswordBuilder.Builder
 
             // Split the trimmed sentence and assign each word to one worker
             var splitTrimmed = t.Content.Split(' ');
-            splitTrimmed.ForEach(word => _pickers.Tell(new Word(word, word.Length)));
+            splitTrimmed.ForEach(word => 
+                // A word message will contain the word, its length and its position in converted list
+                _pickers.Tell(new Word(word, word.Length, splitTrimmed.ToList().IndexOf(word))));
 
             // After all workers have finished, kill them
             _pickers.Tell(new Broadcast(PoisonPill.Instance));

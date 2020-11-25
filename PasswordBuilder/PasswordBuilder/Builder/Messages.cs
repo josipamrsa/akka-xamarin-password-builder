@@ -32,10 +32,12 @@ namespace PasswordBuilder.Builder
         // Receives words from split sentence
         public string Content { get; }
         public int LetterCount { get; }
-        public Word(string c, int lc)
+        public int Id { get; }
+        public Word(string c, int lc, int id)
         {
             Content = c;
             LetterCount = lc;
+            Id = Id;
         }
     }
     public class PasswordChunk {
