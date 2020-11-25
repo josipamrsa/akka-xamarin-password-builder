@@ -27,7 +27,7 @@ namespace PasswordBuilder.Builder
             List<string> cleanSentence = new List<string>();
 
             // Clean up each word in provided sentence
-            Array.ForEach(content.Split(' '), (c) => {
+            Array.ForEach(content.Split(' '), (c) => {             
                 cleanSentence.Add(c.Trim(symbolsToTrim));
             });
             

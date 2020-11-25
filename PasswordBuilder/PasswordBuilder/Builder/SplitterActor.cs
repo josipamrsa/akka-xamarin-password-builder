@@ -16,7 +16,7 @@ namespace PasswordBuilder.Builder
         private IActorRef _trimmer;     // Sentence cleaner
 
         // List that saves received password chunks
-        private List<string> _passwordChunks;
+        private string[] _passwordChunks;
 
         // Actor that coordinates worker actors and assigns work
         public SplitterActor()
@@ -25,8 +25,8 @@ namespace PasswordBuilder.Builder
             // an Initialize message is utilized to define
             // a new actor behaviour
 
-            Receive<Initialize>(/* British devs be like */ innit => 
-                Become(() => InitializeHandler(innit)));                                
+            Receive<Initialize>(/* British devs be like */ innit =>
+                Become(() => InitializeHandler(innit)));
         }
 
         //----HANDLERS----//
@@ -34,26 +34,30 @@ namespace PasswordBuilder.Builder
         // Actor behaviour handler
         private void InitializeHandler(Initialize init)
         {
-            _passwordChunks = new List<string>();
-
             // On new received sentence, process it with TrimmerActor
             Receive<Sentence>(s => OnReceiveSentence(s));
 
             // On trimmed sentence, pass the object to PickerActor,
             // clean previous content of the list and kill the TrimmerActor
-            Receive<TrimmedSentence>(t => {
+            Receive<TrimmedSentence>(t =>
+            {
                 OnReceiveTrimmedSentence(t);
-                _passwordChunks.Clear();
+                _passwordChunks = new string[t.WordCount];
                 _trimmer.Tell(PoisonPill.Instance);
             });
 
             // On received password chunk, save it in the list
-            Receive<PasswordChunk>(p => _passwordChunks.Add(p.Pick));
+            Receive<PasswordChunk>(p =>
+            {
+                System.Diagnostics.Debug.WriteLine(p.Id + ">> " + p.Pick);
+                _passwordChunks[p.Id] = p.Pick;               
+            });
 
             // After all actors have finished, join the newly created
             // password, and publish it into the system stream
-            Receive<Terminated>(term => {
-                var join = _passwordChunks.ToArray().Join("");
+            Receive<Terminated>(term =>
+            {
+                var join = _passwordChunks.Join("");
                 Context.System.EventStream.Publish(new GeneratedPassword(join));
             });
         }
@@ -82,10 +86,13 @@ namespace PasswordBuilder.Builder
 
             // Split the trimmed sentence and assign each word to one worker
             var splitTrimmed = t.Content.Split(' ');
-            splitTrimmed.ForEach(word => 
-                // A word message will contain the word, its length and its position in converted list
-                _pickers.Tell(new Word(word, word.Length, splitTrimmed.ToList().IndexOf(word))));
 
+            splitTrimmed.ForEach(word =>
+            {
+                // For each word in array, send it to a picker actor to process (with index)
+                _pickers.Tell(new Word(word, word.Length, splitTrimmed.ToList().IndexOf(word)));
+            });
+                
             // After all workers have finished, kill them
             _pickers.Tell(new Broadcast(PoisonPill.Instance));
 

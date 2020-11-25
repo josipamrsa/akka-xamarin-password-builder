@@ -9,12 +9,12 @@ namespace PasswordBuilder.Builder
     {
         // Initializes SplitterActor
     }
- 
+
     public class Sentence
     {
         // Receives sentence from user input
         public string Content { get; }
-        public Sentence(string c) => Content = c;   
+        public Sentence(string c) => Content = c;
     }
 
     public class TrimmedSentence
@@ -28,7 +28,8 @@ namespace PasswordBuilder.Builder
             WordCount = wc;
         }
     }
-    public class Word {
+    public class Word
+    {
         // Receives words from split sentence
         public string Content { get; }
         public int LetterCount { get; }
@@ -37,14 +38,19 @@ namespace PasswordBuilder.Builder
         {
             Content = c;
             LetterCount = lc;
-            Id = Id;
+            Id = id; // check spelling next time before you waste an hour on debugging
         }
     }
-    public class PasswordChunk {
+    public class PasswordChunk
+    {
         // Receives generated password chunks
         public string Pick { get; }
-        public PasswordChunk(string p) => Pick = p;
-    
+        public int Id { get; }
+        public PasswordChunk(string p, int id)
+        {
+            Pick = p;
+            Id = id;
+        }
     }
 
     public class GeneratedPassword

@@ -35,8 +35,8 @@ namespace PasswordBuilder.Builder
             else chunk = word.Content[0].ToString();
 
             // Send the generated chunk to coordinator
-            System.Diagnostics.Debug.WriteLine(Self.Path + " >> Received: " + chunk);            
-            Sender.Tell(new PasswordChunk(chunk));
+            System.Diagnostics.Debug.WriteLine(Self.Path + " >> Received: " + chunk + ", id: " + word.Id);            
+            Sender.Tell(new PasswordChunk(chunk, word.Id));
         }
     }
 }
